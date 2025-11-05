@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block title %}Accueil - Fotoblog{% endblock title %}
+
+{% block content %}
+<div class="row">
+    <aside class="col-md-3">
+        <div class="card">
+            <div class="card-body">
+                {% if user.is_authenticated %}
+                    <div class="text-center">
+                        {% if user.avatar %}
+                            <img src="{{ user.avatar.url }}" alt="Avatar de {{ user.username }}" class="img-fluid rounded-circle mb-3" style="width: 100px; height: 100px; object-fit: cover;">
+                        {% endif %}
+                    </div>
+                    <h5 class="card-title">Bienvenue, {{ user.username }}!</h5>
+                    <p class="card-text">Suit: {{user.follows.count}} createurs</p>
+                    <p class="card-text">Ceci est votre section de profil. Vous pouvez afficher ici les détails de l'utilisateur.</p>
+                    <a href="#" class="btn btn-primary">Voir le profil</a>
+                    <a href="{% url 'comptes:avatar_upload' %}" class="btn btn-warning mt-2">changer la photo de profile</a>
+                {% else %}
+                    <h5 class="card-title">Profil</h5>
+                    <p class="card-text">Veuillez vous connecter pour voir votre profil.</p>
+                    <a href="{% url 'comptes:login' %}" class="btn btn-primary">Se connecter</a>
+                {% endif %}
+                <hr>
+                <div class="d-grid gap-2">
+                    {% if perms.blog.add_photo %}
+                    <a href="{% url 'blog:upload_photo' %}" class="btn btn-success">Televerser une photo</a>
+                    {% endif %}
+                    {% if perms.blog.add_blog %}
+                    <a href="{% url 'blog:upload_photo_and_blog' %}" class="btn btn-success">Ecrire un article</a>
+                    {% endif %}
+                    {% if perms.blog.add_photo  and perms.blog.add_blog %}
+                    <a href="{% url 'blog:upload_photos' %}" class="btn btn-success">Televerser plusieurs photos</a>
+                    {% endif %}
+                    <a href="{% url 'blog:follow_user' %}" class="btn btn-info">Suivre un utilisateur</a>
+                </div>
+            </div>
+        </div>
+    </aside>
+    <main class="col-md-9">
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">Derniers Articles du Blog</h5>
+                <div class="list-group">
+                    {% for blog in blogs %}
+                        <a href="{% url 'blog:blog_detail' blog.id %}" class="list-group-item list-group-item-action">
+                            <div class="d-flex w-100 justify-content-between">
+                                <img src="{{blog.photo.image.url}}" alt="Photo associée" class="me-3" style="width: 50px; height: 50px; object-fit: cover;">
+                                <h6 class="mb-1">{{ blog.title }}</h6>
+                                <small class="text-muted">{{ blog.date_created|timesince }} ago</small>
+                            </div>
+                            <p class="ms-1">{{ blog.content|truncatewords:15 }} <small class="text-muted">({{ blog.count_word}} mots)</small></p>
+                        </a>
+                    {% empty %}
+                        <p class="list-group-item">Aucun article de blog pour le moment.</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Photos Récentes</h5>
+                <div class="row">
+                    {% for photo in photos %}
+                        <div class="col-md-4 mb-4">
+                            <div class="card h-100">
+                                <img src="{{ photo.image.url }}" class="card-img-top" alt="{{ photo.caption }}" style="height: 200px; object-fit:scale-down;">
+                                <div class="card-body">
+                                    <p class="card-text text-center">{{ photo.caption|truncatechars:50 }} <a class="btn btn-warning" href="{% url 'blog:photo_update' photo.id %}">update</a>
+                                    <a href="{% url 'blog:photo_delete' photo.id %}" class="btn btn-danger">delete</a></p>
+                                </div>
+                            </div>
+                        </div>
+                    {% empty %}
+                        <p class="card-text col">Aucune photo n'a été téléversée pour le moment.</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+{% endblock content %}

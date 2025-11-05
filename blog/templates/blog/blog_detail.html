@@ -1,0 +1,20 @@
+generate a content to view the detail of a blog
+{% extends "base.html" %}
+
+{% block title %}Détail de l'Article - Fotoblog{% endblock title %}
+
+{% block content %}
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">{{ blog.title }}</h5>
+        <p class="card-text"><small class="text-muted">Publié par {{ blog.photo.uploader }} il y a {{ blog.date_created|timesince }}</small></p>
+        {% if blog.photo %}
+            <img src="{{ blog.photo.image.url }}" alt="Photo associée" class="img-fluid mb-3 me-5 float-start" style="max-height: 400px; object-fit: cover;">
+        {% endif %}
+        <p class="pe-5">{{ blog.content }}</p>
+        <a href="{% url 'blog:home' %}" class="btn btn-success">Retour</a>
+        <a href="{% url 'blog:blog_update' blog.id %}" class="btn btn-warning">Modifier</a>
+        <a href="{% url 'blog:blog_delete' blog.id %}" class="btn btn-danger ms-2">Suprimer</a>
+    </div>
+</div>
+{% endblock content %}

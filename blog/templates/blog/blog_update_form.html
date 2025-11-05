@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}Mettre à jour l'Article - Fotoblog{% endblock title %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body">
+                <h2 class="card-title text-center mb-4">Mettre à jour l'article</h2>
+                <form method="post" enctype="multipart/form-data" action="{% url 'blog:blog_update' blog.pk %}">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <div class="d-grid mt-4">
+                        <button type="submit" class="btn btn-primary">Mettre à jour</button>
+                        <a href="{% url 'blog:blog_detail' blog.pk %}" class="btn btn-secondary mt-2">Annuler</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
