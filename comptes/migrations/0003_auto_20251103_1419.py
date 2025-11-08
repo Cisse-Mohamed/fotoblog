@@ -44,9 +44,6 @@ def create_groups(apps, schema_editor):
             creators.user_set.add(user)
         else:
             subscribers.user_set.add(user)
-    user.save()
-
-    
 
 class Migration(migrations.Migration):
 
